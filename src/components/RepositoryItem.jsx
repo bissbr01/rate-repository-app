@@ -59,6 +59,7 @@ function RepositoryItem({ repository }) {
 
   const roundToThousands = (number) => {
     if (number >= 1000) {
+      // parsing as Number() removes trailing zero after decimal.
       const rounded = Number((Math.round(number) / 1000).toFixed(1));
       return `${rounded}k`;
     } else {
