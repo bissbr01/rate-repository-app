@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   navItem: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 15,
   },
 });
 
@@ -33,13 +33,6 @@ const AppBar = () => {
           <Link to="/signin">
             <Text color="white" fontSize="subheading" fontWeight="bold">
               Sign In
-            </Text>
-          </Link>
-        </Pressable>
-        <Pressable style={styles.navItem}>
-          <Link to="/signin">
-            <Text color="white" fontSize="subheading" fontWeight="bold">
-              TESTTTTTTTTTTTTTTTTTTTTTTTTTT
             </Text>
           </Link>
         </Pressable>

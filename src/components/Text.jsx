@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSizes.body,
     fontFamily: theme.fonts.main,
     fontWeight: theme.fontWeights.normal,
+    textAlign: "left",
   },
   colorTextSecondary: {
     color: theme.colors.textSecondary,
@@ -23,9 +24,15 @@ const styles = StyleSheet.create({
   fontWeightBold: {
     fontWeight: theme.fontWeights.bold,
   },
+  alignLeft: {
+    textAlign: "left",
+  },
+  alignCenter: {
+    textAlign: "center",
+  },
 });
 
-const Text = ({ color, fontSize, fontWeight, style, ...props }) => {
+const Text = ({ color, fontSize, fontWeight, textAlign, style, ...props }) => {
   const textStyle = [
     styles.text,
     color === "textSecondary" && styles.colorTextSecondary,
@@ -33,6 +40,8 @@ const Text = ({ color, fontSize, fontWeight, style, ...props }) => {
     color === "white" && styles.colorWhite,
     fontSize === "subheading" && styles.fontSizeSubheading,
     fontWeight === "bold" && styles.fontWeightBold,
+    textAlign === "left" && styles.alignLeft,
+    textAlign === "center" && styles.alignCenter,
     style,
   ];
 
