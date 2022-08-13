@@ -4,8 +4,11 @@ import * as Yup from "yup";
 import FormikTextInput from "./FormikTextInput";
 import Text from "./Text";
 import theme from "../theme";
+import useSignIn from "../hooks/useSignIn";
 
 const SignIn = () => {
+  const [signIn, { data }] = useSignIn();
+
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "white",
@@ -17,6 +20,7 @@ const SignIn = () => {
       borderRadius: 5,
     },
   });
+
   return (
     <Formik
       initialValues={{
@@ -32,11 +36,15 @@ const SignIn = () => {
           .min(8, "Must have at least 8 characters")
           .required("Password is required"),
       })}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log(values);
-        setTimeout(() => {
+      onSubmit={async (values, { setSubmitting }) => {
+        const { username, password } = values;
+        try {
+          await signIn({ username, password });
+          console.log(data);
           setSubmitting(false);
-        }, 400);
+        } catch (e) {
+          console.log(e);
+        }
       }}
     >
       {({ handleSubmit }) => (
