@@ -1,5 +1,6 @@
 import { Pressable, View, StyleSheet } from "react-native";
 import { Formik } from "formik";
+import { useNavigate } from "react-router-native";
 import * as Yup from "yup";
 import FormikTextInput from "./FormikTextInput";
 import Text from "./Text";
@@ -7,7 +8,8 @@ import theme from "../theme";
 import useSignIn from "../hooks/useSignIn";
 
 const SignIn = () => {
-  const [signIn, { data }] = useSignIn();
+  const [signIn, result] = useSignIn();
+  const navigate = useNavigate();
 
   const styles = StyleSheet.create({
     container: {
@@ -40,8 +42,9 @@ const SignIn = () => {
         const { username, password } = values;
         try {
           await signIn({ username, password });
-          console.log(data);
+          console.log("sign in data: ", result.data);
           setSubmitting(false);
+          navigate("/");
         } catch (e) {
           console.log(e);
         }
