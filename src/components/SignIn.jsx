@@ -42,11 +42,10 @@ const SignIn = () => {
         const { username, password } = values;
         try {
           await signIn({ username, password });
-          console.log("sign in data: ", result.data);
           setSubmitting(false);
           navigate("/");
         } catch (e) {
-          console.log(e);
+          console.warn("We couldn't sign in: ", e);
         }
       }}
     >

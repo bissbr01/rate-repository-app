@@ -22,9 +22,18 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
-  const me = useQuery(ME);
+  const { loading, error, data } = useQuery(ME, {
+    fetchPolicy: "cache-and-network",
+    // Other options
+  });
   const signOut = useSignOut();
 
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  if (loading) return <Text>loading...</Text>;
+  if (error) return <Text>Error! : {error}</Text>;
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
@@ -35,7 +44,13 @@ const AppBar = () => {
             </Text>
           </Link>
         </Pressable>
-        {me ? (
+        {data.me ? (
+          <Pressable onPress={handleSignOut}>
+            <Text color="white" fontSize="subheading" fontWeight="bold">
+              Sign Out
+            </Text>
+          </Pressable>
+        ) : (
           <Pressable style={styles.navItem}>
             <Link to="/signin">
               <Text color="white" fontSize="subheading" fontWeight="bold">
@@ -43,14 +58,11 @@ const AppBar = () => {
               </Text>
             </Link>
           </Pressable>
-        ) : (
-          <Pressable onPress={signOut}>
-            <Link to="/signin">
-              <Text color="white" fontSize="subheading" fontWeight="bold">
-                Sign Out
-              </Text>
-            </Link>
-          </Pressable>
+        )}
+        {data.me && (
+          <Text color="white" fontSize="subheading">
+            {data.username}
+          </Text>
         )}
       </ScrollView>
     </View>

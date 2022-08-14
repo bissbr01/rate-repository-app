@@ -9,12 +9,18 @@ const useSignIn = () => {
   const apolloClient = useApolloClient();
 
   const signIn = async ({ username, password }) => {
-    const authResult = await authenticate({
-      variables: { credentials: { username, password } },
-    });
-    console.log("sign in result", authResult.data.authenticate.accessToken);
-    await authStorage.setAccessToken(authResult.data.authenticate.accessToken);
-    apolloClient.resetStore();
+    try {
+      const authResult = await authenticate({
+        variables: { credentials: { username, password } },
+      });
+      console.log("sign in result: ", authResult.data.authenticate.accessToken);
+      await authStorage.setAccessToken(
+        authResult.data.authenticate.accessToken
+      );
+      await apolloClient.resetStore();
+    } catch (error) {
+      console.warn("Sign in error: ", error);
+    }
   };
 
   return [signIn, result];
