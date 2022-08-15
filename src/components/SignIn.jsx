@@ -7,10 +7,7 @@ import Text from "./Text";
 import theme from "../theme";
 import useSignIn from "../hooks/useSignIn";
 
-const SignIn = () => {
-  const [signIn, result] = useSignIn();
-  const navigate = useNavigate();
-
+export const SignInContainer = ({ signIn, navigate }) => {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "white",
@@ -66,6 +63,13 @@ const SignIn = () => {
       )}
     </Formik>
   );
+};
+
+const SignIn = () => {
+  const [signIn] = useSignIn();
+  const navigate = useNavigate();
+
+  return <SignInContainer signIn={signIn} navigate={navigate} />;
 };
 
 export default SignIn;

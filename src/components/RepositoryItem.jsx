@@ -45,6 +45,16 @@ const styles = StyleSheet.create({
   },
 });
 
+export const roundToThousands = (number) => {
+  if (number >= 1000) {
+    // parsing as Number() removes trailing zero after decimal.
+    const rounded = Number((Math.round(number) / 1000).toFixed(1));
+    return `${rounded}k`;
+  } else {
+    return `${number}`;
+  }
+};
+
 function RepositoryItem({ repository }) {
   const {
     fullName,
@@ -57,18 +67,8 @@ function RepositoryItem({ repository }) {
     ownerAvatarUrl,
   } = repository;
 
-  const roundToThousands = (number) => {
-    if (number >= 1000) {
-      // parsing as Number() removes trailing zero after decimal.
-      const rounded = Number((Math.round(number) / 1000).toFixed(1));
-      return `${rounded}k`;
-    } else {
-      return `${number}`;
-    }
-  };
-
   return (
-    <View style={styles.container}>
+    <View testID="repositoryItem" style={styles.container}>
       <View style={styles.flexRow}>
         <View style={styles.flexItem}>
           <Image style={styles.avatar} source={{ uri: ownerAvatarUrl }} />
