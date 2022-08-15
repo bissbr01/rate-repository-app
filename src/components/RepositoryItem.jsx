@@ -1,6 +1,11 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
+import * as Linking from "expo-linking";
+
 import Text from "./Text";
 import theme from "../theme";
+import { useParams } from "react-router-native";
+import { useQuery } from "@apollo/client";
+import { GET_REPOSITORY } from "../graphql/queries";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,9 +38,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "white",
   },
-  primaryBackground: {
+  languageStyle: {
     alignSelf: "flex-start",
+    marginTop: 10,
     padding: 5,
+    borderRadius: 5,
+    backgroundColor: theme.colors.primary,
+    color: "white",
+  },
+  urlStyle: {
+    flex: 1,
+    marginTop: 10,
+    padding: 10,
     borderRadius: 5,
     backgroundColor: theme.colors.primary,
     color: "white",
@@ -55,7 +69,16 @@ export const roundToThousands = (number) => {
   }
 };
 
-function RepositoryItem({ repository }) {
+function RepositoryItem({ repository, isSingle }) {
+  const params = useParams();
+  const { data, loading, error } = useQuery(GET_REPOSITORY, {
+    variables: { repositoryId: params.id },
+  });
+  if (isSingle) {
+    if (loading) return <Text>loading...</Text>;
+    if (error) return <Text>Error! : {error}</Text>;
+  }
+
   const {
     fullName,
     description,
@@ -65,7 +88,8 @@ function RepositoryItem({ repository }) {
     ratingAverage,
     reviewCount,
     ownerAvatarUrl,
-  } = repository;
+    url,
+  } = isSingle ? data.repository : repository;
 
   return (
     <View testID="repositoryItem" style={styles.container}>
@@ -79,7 +103,7 @@ function RepositoryItem({ repository }) {
           </Text>
           <Text color="textSecondary">{description}</Text>
           <View>
-            <Text style={styles.primaryBackground}>{language}</Text>
+            <Text style={styles.languageStyle}>{language}</Text>
           </View>
         </View>
       </View>
@@ -102,6 +126,18 @@ function RepositoryItem({ repository }) {
           <Text>Rating</Text>
         </View>
       </View>
+      {isSingle && (
+        <View style={styles.flexRow}>
+          <Pressable
+            onPress={() => Linking.openURL(url)}
+            style={styles.urlStyle}
+          >
+            <Text color="white" fontWeight="bold" textAlign="center">
+              Open in Github
+            </Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
