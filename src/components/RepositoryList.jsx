@@ -2,7 +2,7 @@ import { FlatList, View, StyleSheet, Pressable } from "react-native";
 import Text from "./Text";
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
-import { useNavigate, useParams } from "react-router-native";
+import { useNavigate } from "react-router-native";
 
 const styles = StyleSheet.create({
   separator: {
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ItemSeparator = () => <View style={styles.separator} />;
+export const ItemSeparator = () => <View style={styles.separator} />;
 
 export const RepositoryListContainer = ({ repositories, navigate }) => {
   // Get the nodes from the edges array

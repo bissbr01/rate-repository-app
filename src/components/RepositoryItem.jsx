@@ -3,9 +3,6 @@ import * as Linking from "expo-linking";
 
 import Text from "./Text";
 import theme from "../theme";
-import { useParams } from "react-router-native";
-import { useQuery } from "@apollo/client";
-import { GET_REPOSITORY } from "../graphql/queries";
 
 const styles = StyleSheet.create({
   container: {
@@ -70,15 +67,6 @@ export const roundToThousands = (number) => {
 };
 
 function RepositoryItem({ repository, isSingle }) {
-  const params = useParams();
-  const { data, loading, error } = useQuery(GET_REPOSITORY, {
-    variables: { repositoryId: params.id },
-  });
-  if (isSingle) {
-    if (loading) return <Text>loading...</Text>;
-    if (error) return <Text>Error! : {error}</Text>;
-  }
-
   const {
     fullName,
     description,
@@ -89,7 +77,7 @@ function RepositoryItem({ repository, isSingle }) {
     reviewCount,
     ownerAvatarUrl,
     url,
-  } = isSingle ? data.repository : repository;
+  } = repository;
 
   return (
     <View testID="repositoryItem" style={styles.container}>
