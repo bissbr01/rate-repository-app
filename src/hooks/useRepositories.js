@@ -5,7 +5,6 @@ const useRepositories = () => {
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_REPOSITORIES,
     {
-      fetchPolicy: "cache-and-network",
       notifyOnNetworkStatusChange: true,
     }
   );
