@@ -3,6 +3,7 @@ import Text from "./Text";
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 import { useNavigate } from "react-router-native";
+import SortByPicker from "./SortByPicker";
 
 const styles = StyleSheet.create({
   separator: {
@@ -12,7 +13,11 @@ const styles = StyleSheet.create({
 
 export const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({ repositories, navigate }) => {
+export const RepositoryListContainer = ({
+  repositories,
+  navigate,
+  refetch,
+}) => {
   // Get the nodes from the edges array
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -21,6 +26,7 @@ export const RepositoryListContainer = ({ repositories, navigate }) => {
   return (
     <FlatList
       data={repositoryNodes}
+      ListHeaderComponent={() => <SortByPicker refetch={refetch} />}
       renderItem={({ item }) => (
         <Pressable onPress={() => navigate(`/repositories/${item.id}`)}>
           <RepositoryItem repository={item} isSingle={false} />
@@ -32,7 +38,7 @@ export const RepositoryListContainer = ({ repositories, navigate }) => {
 };
 
 const RepositoryList = () => {
-  const { data, loading, error } = useRepositories();
+  const { data, loading, error, refetch } = useRepositories();
   const navigate = useNavigate();
 
   if (loading) return <Text>loading...</Text>;
@@ -41,6 +47,7 @@ const RepositoryList = () => {
   return (
     <RepositoryListContainer
       repositories={data.repositories}
+      refetch={refetch}
       navigate={navigate}
     />
   );
