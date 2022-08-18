@@ -3,14 +3,17 @@ import { REPO_FIELDS_COMPLETE } from "./fragments";
 
 export const GET_REPOSITORIES = gql`
   ${REPO_FIELDS_COMPLETE}
-  query {
-    repositories {
-      totalCount
+  query Query(
+    $orderDirection: OrderDirection
+    $orderBy: AllRepositoriesOrderBy
+  ) {
+    repositories(orderDirection: $orderDirection, orderBy: $orderBy) {
       edges {
         node {
           ...RepoFieldsComplete
         }
       }
+      totalCount
     }
   }
 `;

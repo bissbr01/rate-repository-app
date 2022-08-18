@@ -1,9 +1,11 @@
 import { FlatList, View, StyleSheet, Pressable } from "react-native";
+import { NetworkStatus } from "@apollo/client";
 import Text from "./Text";
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 import { useNavigate } from "react-router-native";
 import SortByPicker from "./SortByPicker";
+import { useState } from "react";
 
 const styles = StyleSheet.create({
   separator: {
@@ -16,7 +18,8 @@ export const ItemSeparator = () => <View style={styles.separator} />;
 export const RepositoryListContainer = ({
   repositories,
   navigate,
-  refetch,
+  sortBy,
+  handleSortChange,
 }) => {
   // Get the nodes from the edges array
   const repositoryNodes = repositories
@@ -26,7 +29,9 @@ export const RepositoryListContainer = ({
   return (
     <FlatList
       data={repositoryNodes}
-      ListHeaderComponent={() => <SortByPicker refetch={refetch} />}
+      ListHeaderComponent={() => (
+        <SortByPicker sortBy={sortBy} handleSortChange={handleSortChange} />
+      )}
       renderItem={({ item }) => (
         <Pressable onPress={() => navigate(`/repositories/${item.id}`)}>
           <RepositoryItem repository={item} isSingle={false} />
@@ -38,9 +43,36 @@ export const RepositoryListContainer = ({
 };
 
 const RepositoryList = () => {
-  const { data, loading, error, refetch } = useRepositories();
+  const { data, loading, error, refetch, networkStatus } = useRepositories();
+  const [sortBy, setSortBy] = useState("latestReviewed");
   const navigate = useNavigate();
 
+  const handleSortChange = async (itemValue) => {
+    setSortBy(itemValue);
+    const variables = {};
+    switch (itemValue) {
+      case "latestReviewed":
+        variables.orderBy = "CREATED_AT";
+        variables.orderDirection = "DESC";
+        break;
+      case "highestRated":
+        variables.orderBy = "RATING_AVERAGE";
+        variables.orderDirection = "DESC";
+        break;
+      case "lowestRated":
+        variables.orderBy = "RATING_AVERAGE";
+        variables.orderDirection = "ASC";
+        break;
+      default:
+        console.warn("exhaustive switch statement error!");
+        break;
+    }
+    console.log("variables in switch", variables);
+    refetch(variables);
+  };
+
+  console.log("network status: ", networkStatus);
+  if (networkStatus === NetworkStatus.refetch) return <Text>Refetching!</Text>;
   if (loading) return <Text>loading...</Text>;
   if (error) return <Text>Error! : {error}</Text>;
 
@@ -49,6 +81,8 @@ const RepositoryList = () => {
       repositories={data.repositories}
       refetch={refetch}
       navigate={navigate}
+      sortBy={sortBy}
+      handleSortChange={handleSortChange}
     />
   );
 };
