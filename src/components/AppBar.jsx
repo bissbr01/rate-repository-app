@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   navItem: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
 });
 
@@ -44,32 +44,38 @@ const AppBar = () => {
             </Text>
           </Link>
         </Pressable>
-        <Pressable style={styles.navItem}>
-          <Link to="/review">
-            <Text color="white" fontSize="subheading" fontWeight="bold">
-              Create A Review
-            </Text>
-          </Link>
-        </Pressable>
         {data.me ? (
-          <Pressable onPress={handleSignOut}>
-            <Text color="white" fontSize="subheading" fontWeight="bold">
-              Sign Out
-            </Text>
-          </Pressable>
-        ) : (
-          <Pressable style={styles.navItem}>
-            <Link to="/signin">
+          <>
+            <Pressable style={styles.navItem}>
+              <Link to="/review">
+                <Text color="white" fontSize="subheading" fontWeight="bold">
+                  Create A Review
+                </Text>
+              </Link>
+            </Pressable>
+            <Pressable style={styles.navItem} onPress={handleSignOut}>
               <Text color="white" fontSize="subheading" fontWeight="bold">
-                Sign In
+                Sign Out
               </Text>
-            </Link>
-          </Pressable>
-        )}
-        {data.me && (
-          <Text color="white" fontSize="subheading">
-            {data.username}
-          </Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Pressable style={styles.navItem}>
+              <Link to="/signin">
+                <Text color="white" fontSize="subheading" fontWeight="bold">
+                  Sign In
+                </Text>
+              </Link>
+            </Pressable>
+            <Pressable style={styles.navItem}>
+              <Link to="/signup">
+                <Text color="white" fontSize="subheading" fontWeight="bold">
+                  Sign Up
+                </Text>
+              </Link>
+            </Pressable>
+          </>
         )}
       </ScrollView>
     </View>
