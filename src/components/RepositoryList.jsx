@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-native";
 import SortByPicker from "./SortByPicker";
 import React, { useState } from "react";
 import Searchbar from "./SearchBar";
-import { useDebounce } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 
 const styles = StyleSheet.create({
   separator: {
@@ -52,8 +52,11 @@ const RepositoryList = () => {
   const { data, loading, error, refetch, networkStatus } = useRepositories();
   const [sortBy, setSortBy] = useState("latestReviewed");
   const [searchQuery, setSearchQuery] = useState();
-  const [debouncedQuery] = useDebounce(searchQuery, 1000);
   const navigate = useNavigate();
+  const debounce = useDebouncedCallback(
+    (query) => refetch({ searchKeyword: query }),
+    500
+  );
 
   const handleSortChange = async (itemValue) => {
     setSortBy(itemValue);
@@ -80,7 +83,7 @@ const RepositoryList = () => {
 
   const onSearch = (query) => {
     setSearchQuery(query);
-    refetch({ searchKeyword: debouncedQuery });
+    debounce(query);
   };
 
   if (networkStatus === NetworkStatus.refetch) return <Text>Refetching!</Text>;
