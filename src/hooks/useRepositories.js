@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import { GET_REPOSITORIES } from "../graphql/queries";
 
 const useRepositories = (variables) => {
-  const { data, loading, refetch, fetchMore, ...result } = useQuery(
+  const { data, loading, error, refetch, fetchMore, ...result } = useQuery(
     GET_REPOSITORIES,
     {
       variables,
@@ -27,8 +27,9 @@ const useRepositories = (variables) => {
   };
 
   return {
-    data,
+    repositories: data?.repositories,
     loading,
+    error,
     refetch,
     fetchMore: handleFetchMore,
     result,

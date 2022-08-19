@@ -6,6 +6,7 @@ import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 import SortByPicker from "./SortByPicker";
 import Searchbar from "./SearchBar";
+import Text from "./Text";
 
 const styles = StyleSheet.create({
   separator: {
@@ -49,7 +50,7 @@ export class RepositoryListContainer extends React.Component {
 }
 
 const RepositoryList = () => {
-  const { data, refetch, fetchMore } = useRepositories({
+  const { repositories, loading, error, refetch, fetchMore } = useRepositories({
     first: 8,
   });
   const [sortBy, setSortBy] = useState("latestReviewed");
@@ -92,9 +93,12 @@ const RepositoryList = () => {
     fetchMore();
   };
 
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error}</Text>;
+
   return (
     <RepositoryListContainer
-      repositories={data.repositories}
+      repositories={repositories}
       refetch={refetch}
       navigate={navigate}
       sortBy={sortBy}
@@ -102,6 +106,7 @@ const RepositoryList = () => {
       onSearch={onSearch}
       searchQuery={searchQuery}
       onEndReached={onEndReached}
+      loading={loading}
     />
   );
 };
