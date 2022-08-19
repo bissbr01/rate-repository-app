@@ -76,3 +76,45 @@ export const ME = gql`
     }
   }
 `;
+
+export const MY_REVIEWS = gql`
+  query Query($first: Int, $after: String) {
+    me {
+      id
+      username
+      createdAt
+      reviewCount
+      reviews(first: $first, after: $after) {
+        totalCount
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          startCursor
+          endCursor
+        }
+        edges {
+          cursor
+          node {
+            id
+            userId
+            repositoryId
+            rating
+            createdAt
+            text
+            repository {
+              id
+              fullName
+              name
+              ownerName
+              ownerAvatarUrl
+            }
+            user {
+              username
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;

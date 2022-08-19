@@ -13,7 +13,6 @@ const useSignIn = () => {
       const authResult = await authenticate({
         variables: { credentials: { username, password } },
       });
-      console.log("sign in result: ", authResult.data.authenticate.accessToken);
       await authStorage.setAccessToken(
         authResult.data.authenticate.accessToken
       );

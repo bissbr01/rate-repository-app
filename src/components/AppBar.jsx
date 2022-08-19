@@ -53,6 +53,13 @@ const AppBar = () => {
                 </Text>
               </Link>
             </Pressable>
+            <Pressable style={styles.navItem}>
+              <Link to="/myReviews">
+                <Text color="white" fontSize="subheading" fontWeight="bold">
+                  My Reviews
+                </Text>
+              </Link>
+            </Pressable>
             <Pressable style={styles.navItem} onPress={handleSignOut}>
               <Text color="white" fontSize="subheading" fontWeight="bold">
                 Sign Out
