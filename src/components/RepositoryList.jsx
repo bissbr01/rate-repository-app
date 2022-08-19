@@ -1,13 +1,11 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-native";
 import { FlatList, View, StyleSheet, Pressable } from "react-native";
-import { NetworkStatus } from "@apollo/client";
-import Text from "./Text";
+import { useDebouncedCallback } from "use-debounce";
 import useRepositories from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
-import { useNavigate } from "react-router-native";
 import SortByPicker from "./SortByPicker";
-import React, { useState } from "react";
 import Searchbar from "./SearchBar";
-import { useDebouncedCallback } from "use-debounce";
 
 const styles = StyleSheet.create({
   separator: {
@@ -29,27 +27,31 @@ export class RepositoryListContainer extends React.Component {
   };
   // Get the nodes from the edges array
   render() {
-    const { repositories, navigate } = this.props;
+    const { repositories, navigate, onEndReached } = this.props;
     const repositoryNodes = repositories
       ? repositories.edges.map((edge) => edge.node)
       : [];
     return (
       <FlatList
-        data={repositoryNodes}
         ListHeaderComponent={this.renderHeader}
+        data={repositoryNodes}
         renderItem={({ item }) => (
           <Pressable onPress={() => navigate(`/repositories/${item.id}`)}>
             <RepositoryItem repository={item} isSingle={false} />
           </Pressable>
         )}
         ItemSeparatorComponent={ItemSeparator}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
       />
     );
   }
 }
 
 const RepositoryList = () => {
-  const { data, loading, error, refetch, networkStatus } = useRepositories();
+  const { data, refetch, fetchMore } = useRepositories({
+    first: 8,
+  });
   const [sortBy, setSortBy] = useState("latestReviewed");
   const [searchQuery, setSearchQuery] = useState();
   const navigate = useNavigate();
@@ -86,9 +88,9 @@ const RepositoryList = () => {
     debounce(query);
   };
 
-  if (networkStatus === NetworkStatus.refetch) return <Text>Refetching!</Text>;
-  if (loading) return <Text>loading...</Text>;
-  if (error) return <Text>Error! : {error}</Text>;
+  const onEndReached = () => {
+    fetchMore();
+  };
 
   return (
     <RepositoryListContainer
@@ -99,6 +101,7 @@ const RepositoryList = () => {
       handleSortChange={handleSortChange}
       onSearch={onSearch}
       searchQuery={searchQuery}
+      onEndReached={onEndReached}
     />
   );
 };
