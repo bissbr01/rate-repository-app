@@ -9,8 +9,8 @@ import ReviewItem from "./ReviewItem";
 
 const SingleRepository = () => {
   const params = useParams();
-  const { data, loading, error } = useQuery(GET_REPOSITORY, {
-    variables: { repositoryId: params.id },
+  const { data, loading, error, fetchMore } = useQuery(GET_REPOSITORY, {
+    variables: { repositoryId: params.id, first: 3 },
     fetchPolicy: "cache-and-network",
   });
 
@@ -33,6 +33,14 @@ const SingleRepository = () => {
         <RepositoryItem repository={repository} isSingle={true} />
       )}
       ItemSeparatorComponent={ItemSeparator}
+      onEndReachedThreshold={0.5}
+      onEndReached={() => {
+        fetchMore({
+          variables: {
+            after: data.repository.reviews.pageInfo.endCursor,
+          },
+        });
+      }}
     />
   );
 };

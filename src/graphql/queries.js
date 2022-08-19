@@ -20,6 +20,9 @@ export const GET_REPOSITORIES = gql`
       edges {
         node {
           ...RepoFieldsComplete
+          reviews {
+            totalCount
+          }
         }
       }
       pageInfo {
@@ -35,16 +38,25 @@ export const GET_REPOSITORIES = gql`
 
 export const GET_REPOSITORY = gql`
   ${REPO_FIELDS_COMPLETE}
-  query Query($repositoryId: ID!) {
+  query Query($repositoryId: ID!, $first: Int, $after: String) {
     repository(id: $repositoryId) {
       ...RepoFieldsComplete
-      reviews {
+      reviews(first: $first, after: $after) {
+        totalCount
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          startCursor
+          endCursor
+        }
         edges {
+          cursor
           node {
             id
-            text
+            userId
             rating
             createdAt
+            text
             user {
               id
               username
